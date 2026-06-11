@@ -1,0 +1,662 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tommy Paycheck Flow Budget</title>
+<style>
+:root {--bg:#030503;--panel:#0d130e;--panel2:#131b14;--line:#273628;--text:#edf7ef;--muted:#9caf9e;--green:#2fe083;--red:#ff5252;--orange:#ffb84d;}
+* {box-sizing:border-box;} body {margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#14351d 0%,var(--bg) 38%,#000 100%);color:var(--text);}
+header {max-width:1400px;margin:0 auto 20px;} h1 {margin:0 0 6px;font-size:36px;} .sub {margin:0;color:var(--muted);}
+.kpis {max-width:1400px;margin:18px auto;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:12px;}
+.kpi {background:linear-gradient(180deg,#121a13,#080c09);border:1px solid var(--line);border-radius:16px;padding:16px;}
+.kpi span {display:block;color:var(--muted);font-size:12px;margin-bottom:7px;} .kpi strong {font-size:22px;}
+.green-text {color:var(--green);} .red-text {color:var(--red);} .orange-text {color:var(--orange);} .muted-line {color:var(--muted);font-size:12px;}
+.cancelled {max-width:1400px;margin:0 auto 18px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;}
+.cancelled h3 {margin:0 0 10px;} .cancelled ul {margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.cancelled li {padding:10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);} .cancelled li span {display:block;color:var(--muted);font-size:13px;} .cancelled li strong {color:var(--green);}
+.month-grid {max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px;align-items:start;}
+.month-col {background:rgba(13,19,14,.96);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 18px 45px rgba(0,0,0,.32);}
+.month-col h2 {margin:0 0 8px;font-size:22px;} .month-summary {display:flex;flex-direction:column;gap:4px;font-size:13px;margin-bottom:12px;color:var(--muted);}
+.pay-card {border:1px solid var(--line);background:var(--panel2);border-radius:14px;margin:10px 0;overflow:hidden;}
+.pay-toggle {width:100%;border:0;background:#182219;color:var(--text);padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;}
+.pay-toggle strong {display:block;font-size:17px;} .pay-toggle small {color:var(--muted);} .pay-toggle b {color:var(--green);font-size:12px;}
+.pay-details {display:none;padding:10px;} .pay-card.open .pay-details {display:block;} .warning {color:#ffd166;margin:0 0 8px;font-size:12px;}
+.mini-toggle {width:100%;margin:6px 0 0;border:1px solid var(--line);color:var(--text);padding:9px 10px;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;background:#101710;}
+.mini-toggle.red {border-left:5px solid var(--red);} .mini-toggle.orange {border-left:5px solid var(--orange);} .mini-toggle.green {border-left:5px solid var(--green);}
+.section-list {display:none;margin:6px 0 8px;padding:0;list-style:none;border-radius:10px;overflow:hidden;} .section-list.open {display:block;}
+.section-list li {display:flex;justify-content:space-between;gap:10px;padding:8px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.05);}
+.section-list li span {color:#dce8dd;} .section-list li strong {white-space:nowrap;}
+.red-list li {background:rgba(255,82,82,.10);} .red-list strong {color:var(--red);} .orange-list li {background:rgba(255,184,77,.10);} .orange-list strong {color:var(--orange);}
+.green-list li {background:rgba(47,224,131,.10);} .green-list strong {color:var(--green);}
+footer {max-width:1400px;margin:18px auto 0;color:var(--muted);font-size:12px;}
+@media (max-width:850px) {body {padding:12px;} .kpis {grid-template-columns:1fr 1fr;} .cancelled ul {grid-template-columns:1fr;}}
+</style></head><body>
+<header><h1>Paycheck Flow Budget</h1><p class="sub">Clickable 12-month budget view. LINKVERTISE is included because it is still active.</p></header>
+<section class="kpis">
+  <div class="kpi"><span>12-Month Paychecks</span><strong class="green-text">$58,387.43</strong></div>
+  <div class="kpi"><span>12-Month Bills</span><strong class="red-text">$29,080.32</strong></div>
+  <div class="kpi"><span>12-Month Spending</span><strong class="orange-text">$18,354.00</strong></div>
+  <div class="kpi"><span>12-Month Savings/Checking</span><strong class="green-text">$10,953.11</strong></div>
+  <div class="kpi"><span>Projected Year Spending</span><strong class="red-text">$47,434.32</strong></div>
+</section>
+<section class="cancelled"><h3>Cancelled / Not Counted Going Forward — projected yearly savings $702.84</h3><ul><li><span>Crunchyroll</span><strong>$12.99/mo</strong></li><li><span>VASA Gym</span><strong>$24.99/mo</strong></li><li><span>LAGOFAST</span><strong>$9.90/mo</strong></li><li><span>Discord Nitro</span><strong>$10.69/mo</strong></li></ul></section>
+<main class="month-grid">
+    <section class="month-col">
+      <h2>June 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,160.00</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $758.43</span>
+        <span class="muted-line">Actual savings transfer $301.60</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jun 12</strong><small>Paycheck $2,107.83</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            <p class='warning'>This check first clears the current -$56.77 balance.</p>
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,299.00</strong></button>
+            <ul class="section-list red-list"><li><span>Jun 12 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 12 — ON3</span><strong>$13.00</strong></li><li><span>Jun 12 — Rent</span><strong>$650.00</strong></li><li><span>Jun 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jun 14 — OPPD</span><strong>$192.00</strong></li><li><span>Jun 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jun 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Jun 21 — VASA Final Cancellation Payment</span><strong>$50.00</strong></li><li><span>Jun 24 — Plex</span><strong>$8.00</strong></li><li><span>Jun 25 — MUD</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$206.83</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$0.00</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$206.83</strong></li>
+              <li><span>Total green amount</span><strong>$206.83</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jun 26</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$861.00</strong></button>
+            <ul class="section-list red-list"><li><span>Jun 26 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 26 — Rent</span><strong>$650.00</strong></li><li><span>Jun 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jun 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jul 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Jul 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$551.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$301.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$551.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>July 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,087.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $887.84</span>
+        <span class="muted-line">Actual savings transfer $387.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jul 10</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,188.36</strong></button>
+            <ul class="section-list red-list"><li><span>Jul 10 — Mowing</span><strong>$55.00</strong></li><li><span>Jul 10 — Rent</span><strong>$650.00</strong></li><li><span>Jul 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jul 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jul 12 — ON3</span><strong>$13.00</strong></li><li><span>Jul 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jul 14 — OPPD</span><strong>$192.00</strong></li><li><span>Jul 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jul 19 — Google Fiber</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$374.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$124.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$374.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jul 24</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$899.00</strong></button>
+            <ul class="section-list red-list"><li><span>Jul 24 — Mowing</span><strong>$55.00</strong></li><li><span>Jul 24 — Plex</span><strong>$8.00</strong></li><li><span>Jul 24 — Rent</span><strong>$650.00</strong></li><li><span>Jul 25 — MUD</span><strong>$153.00</strong></li><li><span>Jul 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jul 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$513.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$263.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$513.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>August 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,210.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $764.84</span>
+        <span class="muted-line">Actual savings transfer $264.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Aug 7</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,311.36</strong></button>
+            <ul class="section-list red-list"><li><span>Aug 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Aug 7 — Mowing</span><strong>$55.00</strong></li><li><span>Aug 7 — Rent</span><strong>$650.00</strong></li><li><span>Aug 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Aug 11 — Progressive</span><strong>$94.36</strong></li><li><span>Aug 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Aug 12 — ON3</span><strong>$13.00</strong></li><li><span>Aug 14 — DashPass</span><strong>$10.00</strong></li><li><span>Aug 14 — OPPD</span><strong>$192.00</strong></li><li><span>Aug 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Aug 19 — Google Fiber</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$251.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$1.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$251.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Aug 21</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$899.00</strong></button>
+            <ul class="section-list red-list"><li><span>Aug 21 — Mowing</span><strong>$55.00</strong></li><li><span>Aug 21 — Rent</span><strong>$650.00</strong></li><li><span>Aug 24 — Plex</span><strong>$8.00</strong></li><li><span>Aug 25 — MUD</span><strong>$153.00</strong></li><li><span>Aug 28 — State Farm</span><strong>$16.00</strong></li><li><span>Aug 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$513.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$263.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$513.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>September 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,210.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $764.84</span>
+        <span class="muted-line">Actual savings transfer $264.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Sep 4</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,158.36</strong></button>
+            <ul class="section-list red-list"><li><span>Sep 4 — Mowing</span><strong>$55.00</strong></li><li><span>Sep 4 — Rent</span><strong>$650.00</strong></li><li><span>Sep 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Sep 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Sep 11 — Progressive</span><strong>$94.36</strong></li><li><span>Sep 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Sep 12 — ON3</span><strong>$13.00</strong></li><li><span>Sep 14 — DashPass</span><strong>$10.00</strong></li><li><span>Sep 14 — OPPD</span><strong>$192.00</strong></li><li><span>Sep 15 — Linkvertise</span><strong>$15.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$154.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$404.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Sep 18</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,052.00</strong></button>
+            <ul class="section-list red-list"><li><span>Sep 18 — Mowing</span><strong>$55.00</strong></li><li><span>Sep 18 — Rent</span><strong>$650.00</strong></li><li><span>Sep 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Sep 24 — Plex</span><strong>$8.00</strong></li><li><span>Sep 25 — MUD</span><strong>$153.00</strong></li><li><span>Sep 28 — State Farm</span><strong>$16.00</strong></li><li><span>Sep 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$360.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$110.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$360.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>October 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $3,151.72</span>
+        <span class="orange-text">Spend $2,106.00</span>
+        <span class="green-text">Savings/Checking $1,236.08</span>
+        <span class="muted-line">Actual savings transfer $486.08</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Oct 2</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,158.36</strong></button>
+            <ul class="section-list red-list"><li><span>Oct 2 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 2 — Rent</span><strong>$650.00</strong></li><li><span>Oct 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Oct 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Oct 11 — Progressive</span><strong>$94.36</strong></li><li><span>Oct 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Oct 12 — ON3</span><strong>$13.00</strong></li><li><span>Oct 14 — DashPass</span><strong>$10.00</strong></li><li><span>Oct 14 — OPPD</span><strong>$192.00</strong></li><li><span>Oct 15 — Linkvertise</span><strong>$15.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$154.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$404.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Oct 16</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,052.00</strong></button>
+            <ul class="section-list red-list"><li><span>Oct 16 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 16 — Rent</span><strong>$650.00</strong></li><li><span>Oct 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Oct 24 — Plex</span><strong>$8.00</strong></li><li><span>Oct 25 — MUD</span><strong>$153.00</strong></li><li><span>Oct 28 — State Farm</span><strong>$16.00</strong></li><li><span>Oct 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$360.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$110.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$360.60</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Oct 30</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$941.36</strong></button>
+            <ul class="section-list red-list"><li><span>Oct 30 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 30 — Rent</span><strong>$650.00</strong></li><li><span>Nov 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Nov 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Nov 11 — Progressive</span><strong>$94.36</strong></li><li><span>Nov 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Nov 12 — ON3</span><strong>$13.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$471.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$221.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$471.24</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>November 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,097.00</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $878.20</span>
+        <span class="muted-line">Actual savings transfer $378.20</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Nov 13</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,236.00</strong></button>
+            <ul class="section-list red-list"><li><span>Nov 13 — Mowing</span><strong>$55.00</strong></li><li><span>Nov 13 — Rent</span><strong>$650.00</strong></li><li><span>Nov 14 — DashPass</span><strong>$10.00</strong></li><li><span>Nov 14 — OPPD</span><strong>$192.00</strong></li><li><span>Nov 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Nov 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Nov 24 — Plex</span><strong>$8.00</strong></li><li><span>Nov 25 — MUD</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$326.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$76.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$326.60</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Nov 27</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$861.00</strong></button>
+            <ul class="section-list red-list"><li><span>Nov 27 — Mowing</span><strong>$55.00</strong></li><li><span>Nov 27 — Rent</span><strong>$650.00</strong></li><li><span>Nov 28 — State Farm</span><strong>$16.00</strong></li><li><span>Nov 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Dec 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Dec 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$551.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$301.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$551.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>December 2026</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,185.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $789.84</span>
+        <span class="muted-line">Actual savings transfer $289.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Dec 11</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,196.36</strong></button>
+            <ul class="section-list red-list"><li><span>Dec 11 — Mowing</span><strong>$55.00</strong></li><li><span>Dec 11 — Progressive</span><strong>$94.36</strong></li><li><span>Dec 11 — Rent</span><strong>$650.00</strong></li><li><span>Dec 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Dec 12 — ON3</span><strong>$13.00</strong></li><li><span>Dec 14 — DashPass</span><strong>$10.00</strong></li><li><span>Dec 14 — OPPD</span><strong>$192.00</strong></li><li><span>Dec 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Dec 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Dec 24 — Plex</span><strong>$8.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$366.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$116.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$366.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Dec 25</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$989.00</strong></button>
+            <ul class="section-list red-list"><li><span>Dec 25 — MUD</span><strong>$153.00</strong></li><li><span>Dec 25 — Mowing</span><strong>$55.00</strong></li><li><span>Dec 25 — Rent</span><strong>$650.00</strong></li><li><span>Dec 28 — State Farm</span><strong>$16.00</strong></li><li><span>Dec 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jan 7 — Cricket Wireless</span><strong>$98.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$173.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$423.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>January 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,112.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $862.84</span>
+        <span class="muted-line">Actual savings transfer $362.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jan 8</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,213.36</strong></button>
+            <ul class="section-list red-list"><li><span>Jan 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Jan 8 — Mowing</span><strong>$55.00</strong></li><li><span>Jan 8 — Rent</span><strong>$650.00</strong></li><li><span>Jan 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jan 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jan 12 — ON3</span><strong>$13.00</strong></li><li><span>Jan 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jan 14 — OPPD</span><strong>$192.00</strong></li><li><span>Jan 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jan 19 — Google Fiber</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$349.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$99.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$349.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jan 22</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$899.00</strong></button>
+            <ul class="section-list red-list"><li><span>Jan 22 — Mowing</span><strong>$55.00</strong></li><li><span>Jan 22 — Rent</span><strong>$650.00</strong></li><li><span>Jan 24 — Plex</span><strong>$8.00</strong></li><li><span>Jan 25 — MUD</span><strong>$153.00</strong></li><li><span>Jan 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jan 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$513.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$263.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$513.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>February 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,210.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $764.84</span>
+        <span class="muted-line">Actual savings transfer $264.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Feb 5</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,158.36</strong></button>
+            <ul class="section-list red-list"><li><span>Feb 5 — Mowing</span><strong>$55.00</strong></li><li><span>Feb 5 — Rent</span><strong>$650.00</strong></li><li><span>Feb 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Feb 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Feb 11 — Progressive</span><strong>$94.36</strong></li><li><span>Feb 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Feb 12 — ON3</span><strong>$13.00</strong></li><li><span>Feb 14 — DashPass</span><strong>$10.00</strong></li><li><span>Feb 14 — OPPD</span><strong>$192.00</strong></li><li><span>Feb 15 — Linkvertise</span><strong>$15.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$154.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$404.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Feb 19</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,052.00</strong></button>
+            <ul class="section-list red-list"><li><span>Feb 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Feb 19 — Mowing</span><strong>$55.00</strong></li><li><span>Feb 19 — Rent</span><strong>$650.00</strong></li><li><span>Feb 24 — Plex</span><strong>$8.00</strong></li><li><span>Feb 25 — MUD</span><strong>$153.00</strong></li><li><span>Feb 28 — State Farm</span><strong>$16.00</strong></li><li><span>Feb 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$360.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$110.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$360.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>March 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,210.36</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $764.84</span>
+        <span class="muted-line">Actual savings transfer $264.84</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Mar 5</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,158.36</strong></button>
+            <ul class="section-list red-list"><li><span>Mar 5 — Mowing</span><strong>$55.00</strong></li><li><span>Mar 5 — Rent</span><strong>$650.00</strong></li><li><span>Mar 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Mar 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Mar 11 — Progressive</span><strong>$94.36</strong></li><li><span>Mar 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Mar 12 — ON3</span><strong>$13.00</strong></li><li><span>Mar 14 — DashPass</span><strong>$10.00</strong></li><li><span>Mar 14 — OPPD</span><strong>$192.00</strong></li><li><span>Mar 15 — Linkvertise</span><strong>$15.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$154.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$404.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Mar 19</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,052.00</strong></button>
+            <ul class="section-list red-list"><li><span>Mar 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Mar 19 — Mowing</span><strong>$55.00</strong></li><li><span>Mar 19 — Rent</span><strong>$650.00</strong></li><li><span>Mar 24 — Plex</span><strong>$8.00</strong></li><li><span>Mar 25 — MUD</span><strong>$153.00</strong></li><li><span>Mar 28 — State Farm</span><strong>$16.00</strong></li><li><span>Mar 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$360.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$110.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$360.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>April 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $3,151.72</span>
+        <span class="orange-text">Spend $2,106.00</span>
+        <span class="green-text">Savings/Checking $1,236.08</span>
+        <span class="muted-line">Actual savings transfer $486.08</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Apr 2</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,158.36</strong></button>
+            <ul class="section-list red-list"><li><span>Apr 2 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 2 — Rent</span><strong>$650.00</strong></li><li><span>Apr 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Apr 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Apr 11 — Progressive</span><strong>$94.36</strong></li><li><span>Apr 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Apr 12 — ON3</span><strong>$13.00</strong></li><li><span>Apr 14 — DashPass</span><strong>$10.00</strong></li><li><span>Apr 14 — OPPD</span><strong>$192.00</strong></li><li><span>Apr 15 — Linkvertise</span><strong>$15.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$154.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$404.24</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Apr 16</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,052.00</strong></button>
+            <ul class="section-list red-list"><li><span>Apr 16 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 16 — Rent</span><strong>$650.00</strong></li><li><span>Apr 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Apr 24 — Plex</span><strong>$8.00</strong></li><li><span>Apr 25 — MUD</span><strong>$153.00</strong></li><li><span>Apr 28 — State Farm</span><strong>$16.00</strong></li><li><span>Apr 28 — YouTube Premium</span><strong>$17.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$360.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$110.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$360.60</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Apr 30</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$941.36</strong></button>
+            <ul class="section-list red-list"><li><span>Apr 30 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 30 — Rent</span><strong>$650.00</strong></li><li><span>May 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>May 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>May 11 — Progressive</span><strong>$94.36</strong></li><li><span>May 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>May 12 — ON3</span><strong>$13.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$471.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$221.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$471.24</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>May 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $2,097.00</span>
+        <span class="orange-text">Spend $1,354.00</span>
+        <span class="green-text">Savings/Checking $878.20</span>
+        <span class="muted-line">Actual savings transfer $378.20</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>May 14</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,236.00</strong></button>
+            <ul class="section-list red-list"><li><span>May 14 — DashPass</span><strong>$10.00</strong></li><li><span>May 14 — Mowing</span><strong>$55.00</strong></li><li><span>May 14 — OPPD</span><strong>$192.00</strong></li><li><span>May 14 — Rent</span><strong>$650.00</strong></li><li><span>May 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>May 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>May 24 — Plex</span><strong>$8.00</strong></li><li><span>May 25 — MUD</span><strong>$153.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$326.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$76.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$326.60</strong></li>
+            </ul>
+          </div>
+        </article>
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>May 28</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$861.00</strong></button>
+            <ul class="section-list red-list"><li><span>May 28 — Mowing</span><strong>$55.00</strong></li><li><span>May 28 — Rent</span><strong>$650.00</strong></li><li><span>May 28 — State Farm</span><strong>$16.00</strong></li><li><span>May 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jun 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Jun 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$551.60</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$301.60</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$551.60</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section>
+    <section class="month-col">
+      <h2>June 2027</h2>
+      <div class="month-summary">
+        <span class="red-text">Bills $1,196.36</span>
+        <span class="orange-text">Spend $602.00</span>
+        <span class="green-text">Savings/Checking $366.24</span>
+        <span class="muted-line">Actual savings transfer $116.24</span>
+      </div>
+      
+        <article class="pay-card">
+          <button class="pay-toggle" onclick="toggleCard(this)">
+            <span><strong>Jun 11</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+          </button>
+          <div class="pay-details">
+            
+            <button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,196.36</strong></button>
+            <ul class="section-list red-list"><li><span>Jun 11 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jun 11 — Rent</span><strong>$650.00</strong></li><li><span>Jun 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jun 12 — ON3</span><strong>$13.00</strong></li><li><span>Jun 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jun 14 — OPPD</span><strong>$192.00</strong></li><li><span>Jun 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jun 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Jun 24 — Plex</span><strong>$8.00</strong></li></ul>
+            <button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+            <ul class="section-list orange-list"><li><span>Groceries / Baker&#x27;s</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+            <button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$366.24</strong></button>
+            <ul class="section-list green-list">
+              <li><span>Move to savings</span><strong>$116.24</strong></li>
+              <li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+              <li><span>Total green amount</span><strong>$366.24</strong></li>
+            </ul>
+          </div>
+        </article>
+    </section></main>
+<footer>“Savings/Checking” is the combined green total: money moved to savings plus the checking cushion left after bills, groceries, bowling, and card transfers. LINKVERTISE is included at $15/month. Amazon is not separately calculated yet.</footer>
+<script>
+function toggleCard(btn) {btn.closest('.pay-card').classList.toggle('open');}
+function toggleSection(btn) {const list = btn.nextElementSibling; if (list) list.classList.toggle('open');}
+</script></body></html>
