@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tommys Budget</title>
+<style>
+:root {--bg:#000000;--panel:#050505;--panel2:#0b0b0b;--line:#1f1f1f;--text:#edf7ef;--muted:#9caf9e;--green:#00ff66;--red:#ff2a2a;--orange:#ffb84d;}
+* {box-sizing:border-box;} body {margin:0;padding:24px;font-family:Arial,Helvetica,sans-serif;background:#000;color:var(--text);}
+header {max-width:1400px;margin:0 auto 20px;} h1 {margin:0 0 6px;font-size:36px;} .sub {margin:0;color:var(--muted);}
+.kpis {max-width:1400px;margin:18px auto;display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:12px;}
+.kpi {background:linear-gradient(180deg,#121a13,#080c09);border:1px solid var(--line);border-radius:16px;padding:16px;}
+.kpi span {display:block;color:var(--muted);font-size:12px;margin-bottom:7px;} .kpi strong {font-size:22px;}
+.green-text {color:var(--green);text-shadow:0 0 10px rgba(0,255,102,.6);} .red-text {color:var(--red);text-shadow:0 0 10px rgba(255,42,42,.6);} .orange-text {color:var(--orange);} .muted-line {color:var(--muted);font-size:12px;}
+.cancelled {max-width:1400px;margin:0 auto 18px;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:16px;}
+.cancelled h3 {margin:0 0 10px;} .cancelled ul {margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.cancelled li {padding:10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);} .cancelled li span {display:block;color:var(--muted);font-size:13px;} .cancelled li strong {color:var(--green);}
+.month-grid {max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:14px;align-items:start;}
+.month-col {background:rgba(13,19,14,.96);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 0 20px rgba(255,255,255,.04),0 18px 45px rgba(0,0,0,.7);}
+.month-col h2 {margin:0 0 8px;font-size:22px;} .month-summary {display:flex;flex-direction:column;gap:4px;font-size:13px;margin-bottom:12px;color:var(--muted);}
+.pay-card {border:1px solid var(--line);background:var(--panel2);border-radius:14px;margin:10px 0;overflow:hidden;}
+.pay-toggle {width:100%;border:0;background:#182219;color:var(--text);padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;text-align:left;}
+.pay-toggle strong {display:block;font-size:17px;} .pay-toggle small {color:var(--muted);} .pay-toggle b {color:var(--green);font-size:12px;}
+.pay-details {display:none;padding:10px;} .pay-card.open .pay-details {display:block;} .warning {color:#ffd166;margin:0 0 8px;font-size:12px;}
+.mini-toggle {width:100%;margin:6px 0 0;border:1px solid var(--line);color:var(--text);padding:9px 10px;border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;background:#101710;}
+.mini-toggle.red {border-left:5px solid var(--red);} .mini-toggle.orange {border-left:5px solid var(--orange);} .mini-toggle.green {border-left:5px solid var(--green);}
+.section-list {display:none;margin:6px 0 8px;padding:0;list-style:none;border-radius:10px;overflow:hidden;} .section-list.open {display:block;}
+.section-list li {display:flex;justify-content:space-between;gap:10px;padding:8px;font-size:12px;border-bottom:1px solid rgba(255,255,255,.05);}
+.section-list li span {color:#dce8dd;} .section-list li strong {white-space:nowrap;}
+.red-list li {background:rgba(255,82,82,.10);} .red-list strong {color:var(--red);} .orange-list li {background:rgba(255,184,77,.10);} .orange-list strong {color:var(--orange);}
+.green-list li {background:rgba(47,224,131,.10);} .green-list strong {color:var(--green);}
+footer {max-width:1400px;margin:18px auto 0;color:var(--muted);font-size:12px;}
+@media (max-width:850px) {
+  body {padding:12px;}
+  .kpis {grid-template-columns:1fr 1fr;}
+  .cancelled ul {grid-template-columns:1fr;}
+
+  .month-summary {
+    gap:8px;
+  }
+  .month-summary span {
+    font-size:21px !important;
+    font-weight:900 !important;
+    line-height:1.45 !important;
+  }
+  
+  
+  
+  .month-summary .muted-line {
+    font-size:17px !important;
+    font-weight:900 !important;
+  }
+
+  .mini-toggle {
+    font-size:20px !important;
+    font-weight:900 !important;
+    padding:16px 14px !important;
+    margin:8px 0 0 !important;
+  }
+  .mini-toggle strong {
+    font-size:20px !important;
+    font-weight:900 !important;
+  }
+
+  .pay-toggle strong {
+    font-size:24px !important;
+    font-weight:900 !important;
+  }
+  .pay-toggle small {
+    font-size:17px !important;
+    font-weight:700 !important;
+  }
+
+  .section-list li {
+    font-size:17px !important;
+    padding:13px 10px !important;
+  }
+  .section-list li strong {
+    font-size:17px !important;
+    font-weight:900 !important;
+  }
+}
+
+
+
+.bill-tools {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:8px 0;
+}
+.bill-tools button {
+  border:1px solid var(--line);
+  background:#050505;
+  color:var(--text);
+  border-radius:10px;
+  padding:8px 10px;
+  font-weight:900;
+  cursor:pointer;
+}
+.bill-progress {
+  height:10px;
+  background:#111;
+  border:1px solid var(--line);
+  border-radius:999px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.bill-progress-fill {
+  height:100%;
+  width:0%;
+  background:var(--green);
+  box-shadow:0 0 12px rgba(0,255,102,.8);
+  transition:width .25s ease;
+}
+.bill-paid-toggle {
+  width:26px;
+  height:26px;
+  min-width:26px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:#050505;
+  color:var(--muted);
+  cursor:pointer;
+  font-weight:900;
+  margin-right:8px;
+}
+.red-list li {
+  align-items:center;
+}
+.red-list li.paid {
+  opacity:.62;
+}
+.red-list li.paid span {
+  text-decoration:line-through;
+}
+.red-list li.paid .bill-paid-toggle {
+  background:var(--green);
+  color:#000;
+  box-shadow:0 0 10px rgba(0,255,102,.7);
+}
+.red-list li strong {
+  cursor:pointer;
+}
+.bill-status {
+  margin:6px 0 8px;
+  padding:8px;
+  border-radius:10px;
+  background:rgba(0,255,102,.08);
+  border:1px solid rgba(0,255,102,.18);
+  color:var(--green);
+  font-size:12px;
+  font-weight:900;
+}
+@media (max-width:850px) {
+  .bill-paid-toggle {
+    width:34px;
+    height:34px;
+    min-width:34px;
+    font-size:18px;
+  }
+  .bill-status, .bill-tools button {
+    font-size:17px !important;
+  }
+}
+
+
+.pay-card {
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.pay-card.open {
+  transform: translateX(12px);
+}
+.section-list {
+  transition: all .18s ease;
+}
+.mini-toggle {
+  transition: transform .15s ease;
+}
+.mini-toggle:active,
+.pay-toggle:active {
+  transform: scale(.98);
+}
+
+
+.section-list li strong {
+  cursor:pointer;
+  border-bottom:1px dashed currentColor;
+}
+.section-list li strong:hover {
+  filter:brightness(1.25);
+}
+
+
+.actual-savings-edit {
+  cursor:pointer;
+  color:var(--green) !important;
+  font-weight:900 !important;
+  border-bottom:1px dashed currentColor;
+  text-shadow:0 0 10px rgba(0,255,102,.55);
+}
+.actual-savings-row {
+  background:rgba(0,255,102,.12) !important;
+}
+
+
+.fund-tracker {
+  width:100%;
+  margin-top:8px;
+  padding:8px;
+  border-radius:10px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+}
+.fund-tracker-row {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+.fund-spent-edit {
+  cursor:pointer;
+  border-bottom:1px dashed currentColor;
+}
+.fund-progress {
+  height:10px;
+  background:rgba(0,0,0,.35);
+  border-radius:999px;
+  overflow:hidden;
+}
+.fund-progress-fill {
+  height:100%;
+  width:0%;
+  background:var(--green);
+  box-shadow:0 0 10px currentColor;
+  transition:width .25s ease;
+}
+.fund-progress-fill.warn { background:#ffb84d; }
+.fund-progress-fill.danger { background:var(--red); }
+@media (max-width:850px) {
+  .fund-tracker-row {font-size:16px !important;}
+  .fund-progress {height:14px;}
+}
+
+
+.fund-summary-line {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+.fund-receipt-log {
+  margin-top:6px;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.35;
+}
+.fund-add-receipt {
+  margin-top:7px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.35);
+  color:var(--text);
+  border-radius:8px;
+  padding:6px 8px;
+  font-weight:900;
+  cursor:pointer;
+}
+@media (max-width:850px) {
+  .fund-summary-line {font-size:16px !important;}
+  .fund-receipt-log {font-size:14px !important;}
+  .fund-add-receipt {font-size:15px !important;}
+}
+
+
+.fund-entry-box {
+  width:100%;
+  margin-top:8px;
+  padding:9px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(0,0,0,.45);
+  color:var(--text);
+  font-weight:900;
+}
+.fund-entry-box::placeholder {
+  color:var(--muted);
+}
+.fund-percent {
+  font-weight:900;
+}
+
+
+/* Full-width fund tracking layout */
+.orange-list li {
+  display:block !important;
+}
+.orange-list li > span,
+.orange-list li > strong {
+  display:inline-block;
+  vertical-align:top;
+}
+.orange-list li > span {
+  width:calc(100% - 110px);
+}
+.orange-list li > strong {
+  width:105px;
+  text-align:right;
+}
+.fund-tracker {
+  display:block !important;
+  width:100% !important;
+  clear:both !important;
+  margin-top:10px !important;
+  padding:10px !important;
+  border-radius:10px !important;
+  background:rgba(255,255,255,.07) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+}
+.fund-summary-line {
+  display:flex !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  font-size:14px !important;
+  font-weight:900 !important;
+  margin-bottom:6px !important;
+}
+.fund-progress {
+  height:12px !important;
+  background:rgba(0,0,0,.38) !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+  margin:8px 0 !important;
+}
+.fund-progress-fill {
+  height:100% !important;
+  width:0%;
+  background:var(--green) !important;
+  box-shadow:0 0 10px currentColor !important;
+  transition:width .25s ease !important;
+}
+.fund-progress-fill.warn { background:#ffb84d !important; }
+.fund-progress-fill.danger { background:var(--red) !important; }
+.fund-entry-box {
+  display:block !important;
+  width:100% !important;
+  margin-top:8px !important;
+  padding:10px !important;
+  border-radius:9px !important;
+  border:1px solid rgba(255,255,255,.25) !important;
+  background:rgba(0,0,0,.45) !important;
+  color:var(--text) !important;
+  font-weight:900 !important;
+  font-size:16px !important;
+}
+@media (max-width:850px) {
+  .orange-list li > span,
+  .orange-list li > strong {
+    font-size:17px !important;
+  }
+  .fund-summary-line {
+    font-size:17px !important;
+    line-height:1.35 !important;
+  }
+  .fund-progress {
+    height:15px !important;
+  }
+  .fund-entry-box {
+    font-size:17px !important;
+    padding:12px !important;
+  }
+}
+
+
+.number-modal-backdrop {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
+.number-modal {
+  width:min(92vw,380px);
+  padding:18px;
+  border-radius:16px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  box-shadow:0 0 25px rgba(0,255,102,.25);
+}
+.number-modal label {
+  display:block;
+  font-weight:900;
+  margin-bottom:10px;
+  color:var(--text);
+}
+.number-modal input {
+  width:100%;
+  padding:14px;
+  font-size:22px;
+  font-weight:900;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#000;
+  color:var(--text);
+}
+.number-modal-actions {
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.number-modal-actions button {
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  font-weight:900;
+  cursor:pointer;
+}
+
+
+.fund-entry-display {
+  margin-top:8px;
+  padding:8px;
+  border-radius:9px;
+  background:rgba(0,0,0,.25);
+  border:1px solid rgba(255,255,255,.16);
+  font-weight:900;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  align-items:center;
+}
+.fund-entry-actions {
+  display:flex;
+  gap:6px;
+}
+.fund-entry-actions button {
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:8px;
+  padding:5px 8px;
+  font-weight:900;
+  cursor:pointer;
+}
+.fund-edit-btn { background:rgba(255,184,77,.35); color:var(--text); }
+.fund-remove-btn { background:rgba(255,39,104,.35); color:var(--text); }
+@media (max-width:850px) {
+  .fund-entry-display {font-size:16px !important;}
+  .fund-entry-actions button {font-size:14px !important; padding:7px 9px !important;}
+}
+
+
+.fund-entry-box {
+  margin-bottom:8px !important;
+}
+.fund-entry-list {
+  margin-top:8px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.fund-entry-item {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  padding:7px 8px;
+  border-radius:8px;
+  background:rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.14);
+  font-weight:900;
+}
+.fund-entry-item button {
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:7px;
+  padding:4px 7px;
+  font-weight:900;
+  cursor:pointer;
+}
+.fund-entry-edit { background:rgba(255,184,77,.35); color:var(--text); }
+.fund-entry-remove { background:rgba(255,39,104,.35); color:var(--text); }
+@media (max-width:850px) {
+  .fund-entry-item {font-size:15px !important;}
+  .fund-entry-item button {font-size:13px !important;}
+}
+
+</style></head><body>
+<header><h1>Tommys Budget</h1><p class="sub">Clickable 12-month budget view. LINKVERTISE is included because it is still active.</p></header>
+<section class="kpis">
+<div class="kpi"><span>12-Month Actual Savings</span><strong class="green-text actual-savings-total">$0.00</strong></div>
+<div class="kpi"><span>12-Month Paychecks</span><strong class="green-text">$58,387.43</strong></div>
+<div class="kpi"><span>12-Month Bills</span><strong class="red-text">$29,405.82</strong></div>
+<div class="kpi"><span>12-Month Spending</span><strong class="orange-text">$18,354.00</strong></div>
+<div class="kpi"><span>12-Month Savings Goal</span><strong class="green-text">$10,627.61</strong></div>
+<div class="kpi"><span>Projected Year Spending</span><strong class="red-text">$47,759.82</strong></div>
+</section>
+<section class="cancelled"><h3>Cancelled / Not Counted Going Forward — projected yearly savings $702.84</h3><ul><li><span>Crunchyroll</span><strong>$12.99/mo</strong></li><li><span>VASA Gym</span><strong>$24.99/mo</strong></li><li><span>LAGOFAST</span><strong>$9.90/mo</strong></li><li><span>Discord Nitro</span><strong>$10.69/mo</strong></li></ul></section>
+<main class="month-grid">
+<section class="month-col">
+<h2>June 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,272.43</span><span class="red-text">Bills $2,160.00</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $758.43</span>
+<span class="muted-line">Actual savings transfer $301.60</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jun 12</strong><small>Paycheck $2,107.83</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<p class="warning">This check first clears the current -$56.77 balance.</p>
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,126.50</strong></button>
+<ul class="section-list red-list"><li><span>Jun 12 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 12 — ON3</span><strong>$13.00</strong></li><li><span>Jun 12 — Rent</span><strong>$650.00</strong></li><li><span>Jun 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jun 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jun 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Jun 21 — VASA Final Cancellation Payment</span><strong>$50.00</strong></li><li><span>Jun 24 — Plex</span><strong>$8.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$379.33</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$0.00</strong></li>
+<li><span>Leave in checking cushion</span><strong>$206.83</strong></li>
+<li><span>Total green amount</span><strong>$379.33</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jun 26</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,033.50</strong></button>
+<ul class="section-list red-list"><li><span>Jun 26 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 26 — Rent</span><strong>$650.00</strong></li><li><span>Jun 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jun 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jul 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Jul 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$379.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$301.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$379.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>July 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,087.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $887.84</span>
+<span class="muted-line">Actual savings transfer $387.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jul 10</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,168.86</strong></button>
+<ul class="section-list red-list"><li><span>Jul 10 — Mowing</span><strong>$55.00</strong></li><li><span>Jul 10 — Rent</span><strong>$650.00</strong></li><li><span>Jul 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jul 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jul 12 — ON3</span><strong>$13.00</strong></li><li><span>Jul 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jul 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jul 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$393.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$124.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$393.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jul 24</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$918.50</strong></button>
+<ul class="section-list red-list"><li><span>Jul 24 — Mowing</span><strong>$55.00</strong></li><li><span>Jul 24 — Plex</span><strong>$8.00</strong></li><li><span>Jul 24 — Rent</span><strong>$650.00</strong></li><li><span>Jul 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jul 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$494.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$263.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$494.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>August 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,210.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $764.84</span>
+<span class="muted-line">Actual savings transfer $264.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Aug 7</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,291.86</strong></button>
+<ul class="section-list red-list"><li><span>Aug 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Aug 7 — Mowing</span><strong>$55.00</strong></li><li><span>Aug 7 — Rent</span><strong>$650.00</strong></li><li><span>Aug 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Aug 11 — Progressive</span><strong>$94.36</strong></li><li><span>Aug 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Aug 12 — ON3</span><strong>$13.00</strong></li><li><span>Aug 14 — DashPass</span><strong>$10.00</strong></li><li><span>Aug 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Aug 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$270.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$1.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$270.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Aug 21</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$918.50</strong></button>
+<ul class="section-list red-list"><li><span>Aug 21 — Mowing</span><strong>$55.00</strong></li><li><span>Aug 21 — Rent</span><strong>$650.00</strong></li><li><span>Aug 24 — Plex</span><strong>$8.00</strong></li><li><span>Aug 28 — State Farm</span><strong>$16.00</strong></li><li><span>Aug 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$494.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$263.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$494.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>September 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,210.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $764.84</span>
+<span class="muted-line">Actual savings transfer $264.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Sep 4</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,138.86</strong></button>
+<ul class="section-list red-list"><li><span>Sep 4 — Mowing</span><strong>$55.00</strong></li><li><span>Sep 4 — Rent</span><strong>$650.00</strong></li><li><span>Sep 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Sep 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Sep 11 — Progressive</span><strong>$94.36</strong></li><li><span>Sep 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Sep 12 — ON3</span><strong>$13.00</strong></li><li><span>Sep 14 — DashPass</span><strong>$10.00</strong></li><li><span>Sep 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$154.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$423.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Sep 18</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,071.50</strong></button>
+<ul class="section-list red-list"><li><span>Sep 18 — Mowing</span><strong>$55.00</strong></li><li><span>Sep 18 — Rent</span><strong>$650.00</strong></li><li><span>Sep 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Sep 24 — Plex</span><strong>$8.00</strong></li><li><span>Sep 28 — State Farm</span><strong>$16.00</strong></li><li><span>Sep 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$341.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$110.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$341.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>October 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $6,493.80</span><span class="red-text">Bills $3,324.22</span>
+<span class="orange-text">Spend $2,106.00</span>
+<span class="green-text">Savings/Checking $1,063.58</span>
+<span class="muted-line">Actual savings transfer $486.08</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Oct 2</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,138.86</strong></button>
+<ul class="section-list red-list"><li><span>Oct 2 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 2 — Rent</span><strong>$650.00</strong></li><li><span>Oct 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Oct 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Oct 11 — Progressive</span><strong>$94.36</strong></li><li><span>Oct 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Oct 12 — ON3</span><strong>$13.00</strong></li><li><span>Oct 14 — DashPass</span><strong>$10.00</strong></li><li><span>Oct 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$154.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$423.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Oct 16</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,071.50</strong></button>
+<ul class="section-list red-list"><li><span>Oct 16 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 16 — Rent</span><strong>$650.00</strong></li><li><span>Oct 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Oct 24 — Plex</span><strong>$8.00</strong></li><li><span>Oct 28 — State Farm</span><strong>$16.00</strong></li><li><span>Oct 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$341.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$110.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$341.10</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Oct 30</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,113.86</strong></button>
+<ul class="section-list red-list"><li><span>Oct 30 — Mowing</span><strong>$55.00</strong></li><li><span>Oct 30 — Rent</span><strong>$650.00</strong></li><li><span>Nov 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Nov 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Nov 11 — Progressive</span><strong>$94.36</strong></li><li><span>Nov 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Nov 12 — ON3</span><strong>$13.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$298.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$221.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$298.74</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>November 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,097.00</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $878.20</span>
+<span class="muted-line">Actual savings transfer $378.20</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Nov 13</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,063.50</strong></button>
+<ul class="section-list red-list"><li><span>Nov 13 — Mowing</span><strong>$55.00</strong></li><li><span>Nov 13 — Rent</span><strong>$650.00</strong></li><li><span>Nov 14 — DashPass</span><strong>$10.00</strong></li><li><span>Nov 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Nov 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Nov 24 — Plex</span><strong>$8.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$499.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$76.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$499.10</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Nov 27</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,033.50</strong></button>
+<ul class="section-list red-list"><li><span>Nov 27 — Mowing</span><strong>$55.00</strong></li><li><span>Nov 27 — Rent</span><strong>$650.00</strong></li><li><span>Nov 28 — State Farm</span><strong>$16.00</strong></li><li><span>Nov 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Dec 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Dec 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$379.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$301.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$379.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>December 2026</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,185.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $789.84</span>
+<span class="muted-line">Actual savings transfer $289.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Dec 11</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,176.86</strong></button>
+<ul class="section-list red-list"><li><span>Dec 11 — Mowing</span><strong>$55.00</strong></li><li><span>Dec 11 — Progressive</span><strong>$94.36</strong></li><li><span>Dec 11 — Rent</span><strong>$650.00</strong></li><li><span>Dec 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Dec 12 — ON3</span><strong>$13.00</strong></li><li><span>Dec 14 — DashPass</span><strong>$10.00</strong></li><li><span>Dec 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Dec 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Dec 24 — Plex</span><strong>$8.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$385.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$116.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$385.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Dec 25</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,008.50</strong></button>
+<ul class="section-list red-list"><li><span>Dec 25 — Mowing</span><strong>$55.00</strong></li><li><span>Dec 25 — Rent</span><strong>$650.00</strong></li><li><span>Dec 28 — State Farm</span><strong>$16.00</strong></li><li><span>Dec 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jan 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$404.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$173.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$404.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>January 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,112.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $862.84</span>
+<span class="muted-line">Actual savings transfer $362.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jan 8</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,193.86</strong></button>
+<ul class="section-list red-list"><li><span>Jan 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Jan 8 — Mowing</span><strong>$55.00</strong></li><li><span>Jan 8 — Rent</span><strong>$650.00</strong></li><li><span>Jan 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jan 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jan 12 — ON3</span><strong>$13.00</strong></li><li><span>Jan 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jan 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jan 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$368.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$99.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$368.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jan 22</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$918.50</strong></button>
+<ul class="section-list red-list"><li><span>Jan 22 — Mowing</span><strong>$55.00</strong></li><li><span>Jan 22 — Rent</span><strong>$650.00</strong></li><li><span>Jan 24 — Plex</span><strong>$8.00</strong></li><li><span>Jan 28 — State Farm</span><strong>$16.00</strong></li><li><span>Jan 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$494.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$263.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$494.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>February 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,210.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $764.84</span>
+<span class="muted-line">Actual savings transfer $264.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Feb 5</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,138.86</strong></button>
+<ul class="section-list red-list"><li><span>Feb 5 — Mowing</span><strong>$55.00</strong></li><li><span>Feb 5 — Rent</span><strong>$650.00</strong></li><li><span>Feb 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Feb 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Feb 11 — Progressive</span><strong>$94.36</strong></li><li><span>Feb 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Feb 12 — ON3</span><strong>$13.00</strong></li><li><span>Feb 14 — DashPass</span><strong>$10.00</strong></li><li><span>Feb 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$154.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$423.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Feb 19</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,071.50</strong></button>
+<ul class="section-list red-list"><li><span>Feb 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Feb 19 — Mowing</span><strong>$55.00</strong></li><li><span>Feb 19 — Rent</span><strong>$650.00</strong></li><li><span>Feb 24 — Plex</span><strong>$8.00</strong></li><li><span>Feb 28 — State Farm</span><strong>$16.00</strong></li><li><span>Feb 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$341.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$110.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$341.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>March 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,210.36</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $764.84</span>
+<span class="muted-line">Actual savings transfer $264.84</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Mar 5</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,138.86</strong></button>
+<ul class="section-list red-list"><li><span>Mar 5 — Mowing</span><strong>$55.00</strong></li><li><span>Mar 5 — Rent</span><strong>$650.00</strong></li><li><span>Mar 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Mar 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Mar 11 — Progressive</span><strong>$94.36</strong></li><li><span>Mar 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Mar 12 — ON3</span><strong>$13.00</strong></li><li><span>Mar 14 — DashPass</span><strong>$10.00</strong></li><li><span>Mar 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$154.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$423.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Mar 19</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,071.50</strong></button>
+<ul class="section-list red-list"><li><span>Mar 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Mar 19 — Mowing</span><strong>$55.00</strong></li><li><span>Mar 19 — Rent</span><strong>$650.00</strong></li><li><span>Mar 24 — Plex</span><strong>$8.00</strong></li><li><span>Mar 28 — State Farm</span><strong>$16.00</strong></li><li><span>Mar 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$341.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$110.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$341.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>April 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $6,493.80</span><span class="red-text">Bills $3,324.22</span>
+<span class="orange-text">Spend $2,106.00</span>
+<span class="green-text">Savings/Checking $1,063.58</span>
+<span class="muted-line">Actual savings transfer $486.08</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Apr 2</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,138.86</strong></button>
+<ul class="section-list red-list"><li><span>Apr 2 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 2 — Rent</span><strong>$650.00</strong></li><li><span>Apr 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Apr 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>Apr 11 — Progressive</span><strong>$94.36</strong></li><li><span>Apr 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Apr 12 — ON3</span><strong>$13.00</strong></li><li><span>Apr 14 — DashPass</span><strong>$10.00</strong></li><li><span>Apr 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$423.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$154.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$423.74</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Apr 16</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,071.50</strong></button>
+<ul class="section-list red-list"><li><span>Apr 16 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 16 — Rent</span><strong>$650.00</strong></li><li><span>Apr 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Apr 24 — Plex</span><strong>$8.00</strong></li><li><span>Apr 28 — State Farm</span><strong>$16.00</strong></li><li><span>Apr 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$341.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$110.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$341.10</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Apr 30</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,113.86</strong></button>
+<ul class="section-list red-list"><li><span>Apr 30 — Mowing</span><strong>$55.00</strong></li><li><span>Apr 30 — Rent</span><strong>$650.00</strong></li><li><span>May 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>May 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>May 11 — Progressive</span><strong>$94.36</strong></li><li><span>May 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>May 12 — ON3</span><strong>$13.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$298.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$221.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$298.74</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>May 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $4,329.20</span><span class="red-text">Bills $2,097.00</span>
+<span class="orange-text">Spend $1,354.00</span>
+<span class="green-text">Savings/Checking $878.20</span>
+<span class="muted-line">Actual savings transfer $378.20</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>May 14</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,063.50</strong></button>
+<ul class="section-list red-list"><li><span>May 14 — DashPass</span><strong>$10.00</strong></li><li><span>May 14 — Mowing</span><strong>$55.00</strong></li><li><span>May 14 — Rent</span><strong>$650.00</strong></li><li><span>May 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>May 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>May 24 — Plex</span><strong>$8.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$499.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$76.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$499.10</strong></li>
+</ul>
+</div>
+</article>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>May 28</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,033.50</strong></button>
+<ul class="section-list red-list"><li><span>May 28 — Mowing</span><strong>$55.00</strong></li><li><span>May 28 — Rent</span><strong>$650.00</strong></li><li><span>May 28 — State Farm</span><strong>$16.00</strong></li><li><span>May 28 — YouTube Premium</span><strong>$17.00</strong></li><li><span>Jun 7 — Cricket Wireless</span><strong>$98.00</strong></li><li><span>Jun 8 — Cornhusker Car Wash</span><strong>$25.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$752.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$350.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$379.10</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$301.60</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$379.10</strong></li>
+</ul>
+</div>
+</article>
+</section>
+<section class="month-col">
+<h2>June 2027</h2>
+<div class="month-summary">
+<span class="green-text">Income $2,164.60</span><span class="red-text">Bills $1,176.86</span>
+<span class="orange-text">Spend $602.00</span>
+<span class="green-text">Savings/Checking $385.74</span>
+<span class="muted-line">Actual savings transfer $116.24</span>
+</div>
+<article class="pay-card">
+<button class="pay-toggle" onclick="toggleCard(this)">
+<span><strong>Jun 11</strong><small>Paycheck $2,164.60</small></span><b>Click</b>
+</button>
+<div class="pay-details">
+<button class="mini-toggle red" onclick="toggleSection(this)">Bills <strong>$1,176.86</strong></button>
+<ul class="section-list red-list"><li><span>Jun 11 — Mowing</span><strong>$55.00</strong></li><li><span>Jun 11 — Progressive</span><strong>$94.36</strong></li><li><span>Jun 11 — Rent</span><strong>$650.00</strong></li><li><span>Jun 11 — Rocket Money</span><strong>$6.00</strong></li><li><span>Jun 12 — ON3</span><strong>$13.00</strong></li><li><span>Jun 14 — DashPass</span><strong>$10.00</strong></li><li><span>Jun 15 — Linkvertise</span><strong>$15.00</strong></li><li><span>Jun 19 — Google Fiber</span><strong>$153.00</strong></li><li><span>Jun 24 — Plex</span><strong>$8.00</strong></li><li><span>OPPD Half Payment</span><strong>$96.00</strong></li><li><span>MUD Half Payment</span><strong>$76.50</strong></li></ul>
+<button class="mini-toggle orange" onclick="toggleSection(this)">Spending <strong>$602.00</strong></button>
+<ul class="section-list orange-list"><li><span>Groceries</span><strong>$350.00</strong></li><li><span>Bowling league</span><strong>$52.00</strong></li><li><span>Move to spending card</span><strong>$200.00</strong></li></ul>
+<button class="mini-toggle green" onclick="toggleSection(this)">Savings / Checking <strong>$385.74</strong></button>
+<ul class="section-list green-list">
+<li><span>Move to savings</span><strong>$116.24</strong></li>
+<li><span>Leave in checking cushion</span><strong>$250.00</strong></li>
+<li><span>Total green amount</span><strong>$385.74</strong></li>
+</ul>
+</div>
+</article>
+</section></main>
+<footer>“Savings/Checking” is the combined green total: money moved to savings plus the checking cushion left after bills, groceries, bowling, and card transfers. LINKVERTISE is included at $15/month. Amazon is not separately calculated yet.</footer>
+<script>
+function toggleCard(btn) {btn.closest('.pay-card').classList.toggle('open');}
+function toggleSection(btn) {const list = btn.nextElementSibling; if (list) list.classList.toggle('open');}
+
+const BUDGET_STORAGE_PREFIX = "tommy-budget";
+
+function moneyToNumber(text) {
+  const cleaned = (text || '').replace(/[^0-9.-]/g, '');
+  return cleaned ? parseFloat(cleaned) : 0;
+}
+function moneyFormat(num) {
+  return '$' + (Math.round(num * 100) / 100).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function getCardIncome(card) {
+  const small = card.querySelector('.pay-toggle small');
+  return moneyToNumber(small ? small.textContent : '');
+}
+function getSectionAmount(card, cls) {
+  const btn = card.querySelector('.mini-toggle.' + cls + ' strong');
+  return moneyToNumber(btn ? btn.textContent : '');
+}
+function storageKey(cardIndex, billIndex) {
+  return BUDGET_STORAGE_PREFIX + '-bill-' + cardIndex + '-' + billIndex;
+}
+function updateMonthTotals(monthCol) {
+  let income = 0, bills = 0, spend = 0, savings = 0;
+
+  monthCol.querySelectorAll('.pay-card').forEach(card => {
+    income += getCardIncome(card);
+    bills += getSectionAmount(card, 'red');
+    spend += getSectionAmount(card, 'orange');
+    savings += getSectionAmount(card, 'green');
+  });
+
+  const summary = monthCol.querySelector('.month-summary');
+  if (!summary) return;
+
+  // Remove any injected duplicate savings/checking lines
+  const greenLines = Array.from(summary.querySelectorAll('.green-text'));
+  greenLines.forEach((line, index) => {
+    if (line.textContent.trim().startsWith('Savings/Checking') && index !== greenLines.findIndex(x => x.textContent.trim().startsWith('Savings/Checking'))) {
+      line.remove();
+    }
+  });
+
+  let incomeLine = summary.querySelector('.income-line');
+  if (!incomeLine) {
+    incomeLine = summary.querySelector('.green-text');
+    if (incomeLine) incomeLine.classList.add('income-line');
+  }
+
+  const billsLine = summary.querySelector('.red-text');
+  const spendLine = summary.querySelector('.orange-text');
+  const savingsLine = Array.from(summary.querySelectorAll('.green-text')).find(el => el.textContent.trim().startsWith('Savings/Checking'));
+
+  if (incomeLine) incomeLine.textContent = 'Income ' + moneyFormat(income);
+  if (billsLine) billsLine.textContent = 'Bills ' + moneyFormat(bills);
+  if (spendLine) spendLine.textContent = 'Spend ' + moneyFormat(spend);
+  if (savingsLine) savingsLine.textContent = 'Savings/Checking ' + moneyFormat(savings);
+}
+function updateCardTotals(card) {
+  let bills = 0, paid = 0;
+  card.querySelectorAll('.red-list li').forEach(li => {
+    const amt = moneyToNumber(li.querySelector('strong')?.textContent || '0');
+    bills += amt;
+    if (li.classList.contains('paid')) paid += amt;
+  });
+  const spending = getSectionAmount(card, 'orange');
+  const income = getCardIncome(card);
+  const green = income - bills - spending;
+
+  const billBtn = card.querySelector('.mini-toggle.red strong');
+  if (billBtn) billBtn.textContent = moneyFormat(bills);
+
+  const greenBtn = card.querySelector('.mini-toggle.green strong');
+  if (greenBtn) greenBtn.textContent = moneyFormat(green);
+
+  const totalGreen = Array.from(card.querySelectorAll('.green-list li')).find(li => li.textContent.includes('Total green amount') || li.textContent.includes('Savings / cushion amount') || li.textContent.includes('Savings'));
+  if (totalGreen && totalGreen.querySelector('strong')) totalGreen.querySelector('strong').textContent = moneyFormat(green);
+
+  let status = card.querySelector('.bill-status');
+  const redList = card.querySelector('.red-list');
+  if (redList && !status) {
+    status = document.createElement('div');
+    status.className = 'bill-status';
+    redList.insertAdjacentElement('afterend', status);
+  }
+  if (status) {
+    const pct = bills > 0 ? Math.round((paid / bills) * 100) : 0;
+    status.textContent = 'Paid ' + moneyFormat(paid) + ' / Remaining ' + moneyFormat(bills - paid) + ' • ' + pct + '% complete';
+  }
+
+  let progress = card.querySelector('.bill-progress');
+  if (redList && !progress) {
+    progress = document.createElement('div');
+    progress.className = 'bill-progress';
+    progress.innerHTML = '<div class="bill-progress-fill"></div>';
+    status.insertAdjacentElement('afterend', progress);
+  }
+  const fill = card.querySelector('.bill-progress-fill');
+  if (fill) fill.style.width = bills > 0 ? Math.min(100, (paid / bills) * 100) + '%' : '0%';
+
+  const monthCol = card.closest('.month-col');
+  if (monthCol) updateMonthTotals(monthCol);
+}
+function setupBillTracker() {
+  document.querySelectorAll('.pay-card').forEach((card, cardIndex) => {
+    const redList = card.querySelector('.red-list');
+    if (redList && !card.querySelector('.bill-tools')) {
+      const tools = document.createElement('div');
+      tools.className = 'bill-tools';
+      tools.innerHTML = '<button type="button" class="mark-all-paid">Mark all paid</button><button type="button" class="mark-all-unpaid">Clear paid</button><button type="button" class="export-progress">Export</button><button type="button" class="import-progress">Import</button>';
+      redList.insertAdjacentElement('afterend', tools);
+
+      tools.querySelector('.mark-all-paid').addEventListener('click', () => {
+        card.querySelectorAll('.red-list li').forEach((li, billIndex) => {
+          li.classList.add('paid');
+          const btn = li.querySelector('.bill-paid-toggle');
+          if (btn) btn.textContent = '✓';
+          const amount = moneyToNumber(li.querySelector('strong')?.textContent || '0');
+          localStorage.setItem(storageKey(cardIndex, billIndex), JSON.stringify({amount, paid:true}));
+        });
+        updateCardTotals(card);
+      });
+      tools.querySelector('.mark-all-unpaid').addEventListener('click', () => {
+        card.querySelectorAll('.red-list li').forEach((li, billIndex) => {
+          li.classList.remove('paid');
+          const btn = li.querySelector('.bill-paid-toggle');
+          if (btn) btn.textContent = '';
+          const amount = moneyToNumber(li.querySelector('strong')?.textContent || '0');
+          localStorage.setItem(storageKey(cardIndex, billIndex), JSON.stringify({amount, paid:false}));
+        });
+        updateCardTotals(card);
+      });
+      tools.querySelector('.export-progress').addEventListener('click', () => {
+        const data = {};
+        for (let i=0; i<localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith(BUDGET_STORAGE_PREFIX)) data[k] = localStorage.getItem(k);
+        }
+        prompt('Copy this backup text:', JSON.stringify(data));
+      });
+      tools.querySelector('.import-progress').addEventListener('click', () => {
+        const raw = prompt('Paste backup text:');
+        if (!raw) return;
+        try {
+          const data = JSON.parse(raw);
+          Object.keys(data).forEach(k => {
+            if (k.startsWith(BUDGET_STORAGE_PREFIX)) localStorage.setItem(k, data[k]);
+          });
+          location.reload();
+        } catch(e) {
+          alert('Import failed. The backup text was not valid.');
+        }
+      });
+    }
+
+    card.querySelectorAll('.red-list li').forEach((li, billIndex) => {
+      const key = storageKey(cardIndex, billIndex);
+      const strong = li.querySelector('strong');
+      const saved = JSON.parse(localStorage.getItem(key) || '{}');
+
+      if (saved.amount && strong) strong.textContent = moneyFormat(saved.amount);
+      if (saved.paid) li.classList.add('paid');
+
+      if (!li.querySelector('.bill-paid-toggle')) {
+        const btn = document.createElement('button');
+        btn.className = 'bill-paid-toggle';
+        btn.type = 'button';
+        btn.textContent = saved.paid ? '✓' : '';
+        btn.title = 'Mark paid/unpaid';
+        li.insertBefore(btn, li.firstChild);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          li.classList.toggle('paid');
+          btn.textContent = li.classList.contains('paid') ? '✓' : '';
+          const amount = moneyToNumber(strong ? strong.textContent : '0');
+          localStorage.setItem(key, JSON.stringify({amount, paid: li.classList.contains('paid')}));
+          updateCardTotals(card);
+          if (typeof glitterExplosion === 'function') glitterExplosion(e.clientX, e.clientY);
+        });
+      }
+
+      if (strong && !strong.dataset.editReady) {
+        strong.dataset.editReady = '1';
+        strong.title = 'Tap to edit amount';
+        strong.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const current = moneyToNumber(strong.textContent);
+          askNumberPad('Edit bill amount:', current.toFixed(2), function(next) {
+          strong.textContent = moneyFormat(next);
+          localStorage.setItem(key, JSON.stringify({amount: next, paid: li.classList.contains('paid')}));
+          updateCardTotals(card);
+          if (typeof updateCardFromEditableRows === 'function') updateCardFromEditableRows(card);
+          if (typeof updateTommyTopTotals === 'function') updateTommyTopTotals();
+          if (typeof updateAshleyTopTotals === 'function') updateAshleyTopTotals();
+        });
+        });
+      }
+    });
+    updateCardTotals(card);
+  });
+}
+document.addEventListener('DOMContentLoaded', setupBillTracker);
+
+
+function setupEditableMoneyFields() {
+  document.querySelectorAll('.pay-card').forEach((card, cardIndex) => {
+    card.querySelectorAll('.red-list li strong, .orange-list li strong').forEach((strong, fieldIndex) => {
+      if (strong.dataset.moneyEditReady === '1') return;
+      strong.dataset.moneyEditReady = '1';
+      strong.title = 'Tap to edit amount';
+
+      const key = BUDGET_STORAGE_PREFIX + '-money-field-' + cardIndex + '-' + fieldIndex;
+      const saved = localStorage.getItem(key);
+      if (saved !== null) strong.textContent = moneyFormat(parseFloat(saved));
+
+      strong.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const current = moneyToNumber(strong.textContent);
+        askNumberPad('Edit amount:', current.toFixed(2), function(next) {
+        strong.textContent = moneyFormat(next);
+        localStorage.setItem(key, next.toFixed(2));
+
+        updateCardFromEditableRows(card);
+        if (typeof updateTommyTopTotals === 'function') updateTommyTopTotals();
+        if (typeof updateAshleyTopTotals === 'function') updateAshleyTopTotals();
+      });
+      });
+    });
+
+    updateCardFromEditableRows(card);
+  });
+
+  updateTommyTopTotals();
+}
+
+function updateCardFromEditableRows(card) {
+  let bills = 0, spending = 0;
+
+  card.querySelectorAll('.red-list li strong').forEach(x => bills += moneyToNumber(x.textContent));
+  card.querySelectorAll('.orange-list li strong').forEach(x => spending += moneyToNumber(x.textContent));
+
+  const income = getCardIncome(card);
+  const savings = income - bills - spending;
+
+  const billBtn = card.querySelector('.mini-toggle.red strong');
+  const spendBtn = card.querySelector('.mini-toggle.orange strong');
+  const greenBtn = card.querySelector('.mini-toggle.green strong');
+
+  if (billBtn) billBtn.textContent = moneyFormat(bills);
+  if (spendBtn) spendBtn.textContent = moneyFormat(spending);
+  if (greenBtn) greenBtn.textContent = moneyFormat(savings);
+
+  const greenRows = card.querySelectorAll('.green-list li strong');
+  if (greenRows.length) {
+    const last = greenRows[greenRows.length - 1];
+    last.textContent = moneyFormat(savings);
+  }
+
+  const monthCol = card.closest('.month-col');
+  if (monthCol) updateMonthTotals(monthCol);
+}
+
+function updateTommyTopTotals() {
+  let income = 0, bills = 0, spend = 0, savings = 0;
+
+  document.querySelectorAll('.pay-card').forEach(card => {
+    income += getCardIncome(card);
+    bills += getSectionAmount(card, 'red');
+    spend += getSectionAmount(card, 'orange');
+    savings += getSectionAmount(card, 'green');
+  });
+
+  document.querySelectorAll('.kpi').forEach(kpi => {
+    const label = kpi.querySelector('span');
+    const value = kpi.querySelector('strong');
+    if (!label || !value) return;
+
+    const text = label.textContent.trim();
+
+    if (text === '12-Month Paychecks') value.textContent = moneyFormat(income);
+    if (text === '12-Month Bills') value.textContent = moneyFormat(bills);
+    if (text === '12-Month Spending') value.textContent = moneyFormat(spend);
+    if (text === '12-Month Savings Goal') value.textContent = moneyFormat(savings);
+    if (text === 'Projected Year Spending') value.textContent = moneyFormat(bills + spend);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', setupEditableMoneyFields);
+
+
+function setupActualSavingsTracker() {
+  document.querySelectorAll('.pay-card').forEach((card, cardIndex) => {
+    let list = card.querySelector('.green-list');
+    if (!list) return;
+
+    let row = list.querySelector('.actual-savings-row');
+    if (!row) {
+      row = document.createElement('li');
+      row.className = 'actual-savings-row';
+      row.innerHTML = '<span>Actual savings from this paycheck</span><strong class="actual-savings-edit">$0.00</strong>';
+      list.insertBefore(row, list.firstChild);
+    }
+
+    const amount = row.querySelector('strong');
+    const key = BUDGET_STORAGE_PREFIX + '-actual-savings-' + cardIndex;
+    const saved = localStorage.getItem(key);
+    if (saved !== null) amount.textContent = moneyFormat(parseFloat(saved));
+
+    if (amount.dataset.actualReady !== '1') {
+      amount.dataset.actualReady = '1';
+      amount.title = 'Tap to edit actual savings';
+      amount.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const current = moneyToNumber(amount.textContent);
+        askNumberPad('Actual savings from this paycheck:', current.toFixed(2), function(next) {
+        amount.textContent = moneyFormat(next);
+        localStorage.setItem(key, next.toFixed(2));
+        updateActualSavingsTotal();
+      });
+      });
+    }
+  });
+  updateActualSavingsTotal();
+}
+
+function updateActualSavingsTotal() {
+  let total = 0;
+  document.querySelectorAll('.actual-savings-edit').forEach(el => {
+    total += moneyToNumber(el.textContent);
+  });
+  const top = document.querySelector('.actual-savings-total');
+  if (top) top.textContent = moneyFormat(total);
+}
+
+document.addEventListener('DOMContentLoaded', setupActualSavingsTracker);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function askNumberPad(message, currentValue, callback) {
+  let backdrop = document.querySelector('.number-modal-backdrop');
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'number-modal-backdrop';
+    backdrop.innerHTML =
+      '<div class="number-modal">' +
+      '<label></label>' +
+      '<input inputmode="decimal" type="text" pattern="[0-9]*" autocomplete="off" autocorrect="off" spellcheck="false" />' +
+      '<div class="number-modal-actions"><button type="button" class="number-cancel">Cancel</button><button type="button" class="number-save">Save</button></div>' +
+      '</div>';
+    document.body.appendChild(backdrop);
+  }
+
+  const label = backdrop.querySelector('label');
+  const input = backdrop.querySelector('input');
+  const cancel = backdrop.querySelector('.number-cancel');
+  const save = backdrop.querySelector('.number-save');
+
+  label.textContent = message;
+  input.value = currentValue || '';
+  backdrop.style.display = 'flex';
+
+  setTimeout(() => input.focus(), 50);
+
+  const close = () => {
+    backdrop.style.display = 'none';
+    cancel.onclick = null;
+    save.onclick = null;
+    input.onkeydown = null;
+  };
+
+  cancel.onclick = () => close();
+  save.onclick = () => {
+    const cleaned = input.value.replace(/[^0-9.-]/g, '');
+    const next = parseFloat(cleaned);
+    if (!isNaN(next)) callback(next);
+    close();
+  };
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') save.click();
+    if (e.key === 'Escape') cancel.click();
+  };
+}
+
+
+
+
+
+const FUND_STORAGE_PREFIX = "tommy-fund-line-items-v1";
+
+function getFundItems(key) {
+  try {
+    return JSON.parse(localStorage.getItem(key) || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+function saveFundItems(key, items) {
+  localStorage.setItem(key, JSON.stringify(items));
+}
+function setupFundTrackers() {
+  document.querySelectorAll('.pay-card').forEach((card, cardIndex) => {
+    card.querySelectorAll('.orange-list li').forEach((li, fundIndex) => {
+      if (li.dataset.fundReady === '1') return;
+      li.dataset.fundReady = '1';
+
+      const budgetStrong = Array.from(li.children).find(el => el.tagName === 'STRONG');
+      if (!budgetStrong) return;
+
+      const key = FUND_STORAGE_PREFIX + '-' + cardIndex + '-' + fundIndex;
+
+      const tracker = document.createElement('div');
+      tracker.className = 'fund-tracker';
+      tracker.innerHTML =
+        '<div class="fund-summary-line"><span class="fund-used">$0.00 out of $0.00</span><strong class="fund-remaining">$0.00 left</strong></div>' +
+        '<div class="fund-summary-line"><span class="fund-percent">0% used</span></div>' +
+        '<div class="fund-progress"><div class="fund-progress-fill"></div></div>' +
+        '<input class="fund-entry-box" inputmode="decimal" type="text" pattern="[0-9]*" placeholder="Enter amount spent, then press Enter" autocomplete="off" autocorrect="off" spellcheck="false" />' +
+        '<div class="fund-entry-list"></div>';
+      li.appendChild(tracker);
+
+      const input = tracker.querySelector('.fund-entry-box');
+
+      function submitFundAmount() {
+        const amount = parseFloat((input.value || '').replace(/[^0-9.-]/g, ''));
+        if (isNaN(amount) || amount <= 0) return;
+
+        const items = getFundItems(key);
+        items.push({amount: amount});
+        saveFundItems(key, items);
+
+        input.value = '';
+        updateFundTracker(li, key);
+      }
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitFundAmount();
+        }
+      });
+
+      input.addEventListener('change', function() {
+        submitFundAmount();
+      });
+
+      input.addEventListener('blur', function() {
+        if ((input.value || '').trim() !== '') {
+          submitFundAmount();
+        }
+      });
+
+      input.addEventListener('blur', function() {
+        // Do not keep the typed amount sitting in the box.
+        if (input.value.trim() === '0' || input.value.trim() === '0.00') input.value = '';
+      });
+
+      updateFundTracker(li, key);
+    });
+  });
+}
+
+function updateFundTracker(li, key) {
+  const budgetStrong = Array.from(li.children).find(el => el.tagName === 'STRONG');
+  const budget = moneyToNumber(budgetStrong ? budgetStrong.textContent : '0');
+  const items = getFundItems(key);
+  const spent = items.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const remaining = budget - spent;
+  const pct = budget > 0 ? Math.min(100, Math.max(0, (spent / budget) * 100)) : 0;
+
+  const usedEl = li.querySelector('.fund-used');
+  const remainingEl = li.querySelector('.fund-remaining');
+  const pctEl = li.querySelector('.fund-percent');
+  const fill = li.querySelector('.fund-progress-fill');
+  const list = li.querySelector('.fund-entry-list');
+
+  if (usedEl) usedEl.textContent = moneyFormat(spent) + ' out of ' + moneyFormat(budget);
+  if (remainingEl) remainingEl.textContent = moneyFormat(remaining) + ' left';
+  if (pctEl) pctEl.textContent = Math.round(pct) + '% used';
+
+  if (fill) {
+    fill.style.width = pct + '%';
+    fill.classList.remove('warn', 'danger');
+    if (pct >= 100) fill.classList.add('danger');
+    else if (pct >= 75) fill.classList.add('warn');
+  }
+
+  if (list) {
+    list.innerHTML = '';
+    items.forEach((item, index) => {
+      const row = document.createElement('div');
+      row.className = 'fund-entry-item';
+      row.innerHTML =
+        '<span>Spent ' + moneyFormat(Number(item.amount || 0)) + '</span>' +
+        '<span><button type="button" class="fund-entry-edit" title="Edit">✏️</button> <button type="button" class="fund-entry-remove" title="Remove">❌</button></span>';
+
+      row.querySelector('.fund-entry-edit').addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (typeof askNumberPad === 'function') {
+          askNumberPad('Edit spent amount:', Number(item.amount || 0).toFixed(2), function(next) {
+            items[index].amount = next;
+            saveFundItems(key, items);
+            updateFundTracker(li, key);
+          });
+        } else {
+          const nextRaw = prompt('Edit spent amount:', Number(item.amount || 0).toFixed(2));
+          if (nextRaw === null) return;
+          const next = parseFloat(nextRaw.replace(/[^0-9.-]/g, ''));
+          if (isNaN(next)) return;
+          items[index].amount = next;
+          saveFundItems(key, items);
+          updateFundTracker(li, key);
+        }
+      });
+
+      row.querySelector('.fund-entry-remove').addEventListener('click', function(e) {
+        e.stopPropagation();
+        items.splice(index, 1);
+        saveFundItems(key, items);
+        updateFundTracker(li, key);
+      });
+
+      list.appendChild(row);
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', setupFundTrackers);
+
+</script></body></html>
+<!-- Updated to icon buttons -->
