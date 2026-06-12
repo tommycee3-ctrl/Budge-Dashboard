@@ -193,9 +193,22 @@ footer {max-width:1400px;margin:18px auto 0;color:var(--muted);font-size:12px;}
   filter:brightness(1.25);
 }
 
+
+.actual-savings-edit {
+  cursor:pointer;
+  color:var(--green) !important;
+  font-weight:900 !important;
+  border-bottom:1px dashed currentColor;
+  text-shadow:0 0 10px rgba(0,255,102,.55);
+}
+.actual-savings-row {
+  background:rgba(0,255,102,.12) !important;
+}
+
 </style></head><body>
 <header><h1>Tommys Budget</h1><p class="sub">Clickable 12-month budget view. LINKVERTISE is included because it is still active.</p></header>
 <section class="kpis">
+  <div class="kpi"><span>12-Month Actual Savings</span><strong class="green-text actual-savings-total">$0.00</strong></div>
   <div class="kpi"><span>12-Month Paychecks</span><strong class="green-text">$58,387.43</strong></div>
   <div class="kpi"><span>12-Month Bills</span><strong class="red-text">$29,080.32</strong></div>
   <div class="kpi"><span>12-Month Spending</span><strong class="orange-text">$18,354.00</strong></div>
@@ -1110,5 +1123,54 @@ function updateTommyTopTotals() {
 }
 
 document.addEventListener('DOMContentLoaded', setupEditableMoneyFields);
+
+
+function setupActualSavingsTracker() {
+  document.querySelectorAll('.pay-card').forEach((card, cardIndex) => {
+    let list = card.querySelector('.green-list');
+    if (!list) return;
+
+    let row = list.querySelector('.actual-savings-row');
+    if (!row) {
+      row = document.createElement('li');
+      row.className = 'actual-savings-row';
+      row.innerHTML = '<span>Actual savings from this paycheck</span><strong class="actual-savings-edit">$0.00</strong>';
+      list.insertBefore(row, list.firstChild);
+    }
+
+    const amount = row.querySelector('strong');
+    const key = BUDGET_STORAGE_PREFIX + '-actual-savings-' + cardIndex;
+    const saved = localStorage.getItem(key);
+    if (saved !== null) amount.textContent = moneyFormat(parseFloat(saved));
+
+    if (amount.dataset.actualReady !== '1') {
+      amount.dataset.actualReady = '1';
+      amount.title = 'Tap to edit actual savings';
+      amount.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const current = moneyToNumber(amount.textContent);
+        const entered = prompt('Actual savings from this paycheck:', current.toFixed(2));
+        if (entered === null) return;
+        const next = parseFloat(entered.replace(/[^0-9.-]/g, ''));
+        if (isNaN(next)) return;
+        amount.textContent = moneyFormat(next);
+        localStorage.setItem(key, next.toFixed(2));
+        updateActualSavingsTotal();
+      });
+    }
+  });
+  updateActualSavingsTotal();
+}
+
+function updateActualSavingsTotal() {
+  let total = 0;
+  document.querySelectorAll('.actual-savings-edit').forEach(el => {
+    total += moneyToNumber(el.textContent);
+  });
+  const top = document.querySelector('.actual-savings-total');
+  if (top) top.textContent = moneyFormat(total);
+}
+
+document.addEventListener('DOMContentLoaded', setupActualSavingsTracker);
 
 </script></body></html>
