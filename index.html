@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>CasellaIQ Mobile Flow Mock</title>
+  <style>
+    :root{
+      --bg:#fff4fb;--bg2:#ffd9ee;--card:#ffffffcc;--ink:#35122d;--muted:#8a6a80;
+      --pink:#ff5fae;--pink2:#ff9aca;--green:#22c55e;--yellow:#facc15;--red:#ef4444;--orange:#f97316;--blue:#3b82f6;--purple:#8b5cf6;
+      --shadow:0 16px 45px rgba(255,95,174,.22);--line:rgba(255,95,174,.28);
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(135deg,var(--bg),var(--bg2));color:var(--ink)}
+    .app{max-width:430px;margin:0 auto;min-height:100vh;padding:16px 14px 92px;position:relative;overflow:hidden}
+    .app:before{content:"♡ 🎀 ♡ 🎀 ♡";position:fixed;bottom:86px;left:0;right:0;text-align:center;opacity:.13;font-size:26px;letter-spacing:14px;pointer-events:none}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.brand{font-weight:900;font-size:26px;color:var(--pink)}.pill{border:1px solid var(--line);background:#fff8;border-radius:999px;padding:8px 12px;font-weight:800;color:var(--pink)}
+    .hello{margin:8px 0 14px}.hello h1{margin:0;font-size:25px}.hello p{margin:4px 0 0;color:var(--muted)}
+    .insight{background:linear-gradient(135deg,#fff,#ffe2f1);border:1px solid var(--line);border-radius:24px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px;display:flex;gap:12px;align-items:center}.insight b{display:block}.insight span{color:var(--muted);font-size:13px}.bubble{width:44px;height:44px;border-radius:16px;background:linear-gradient(135deg,var(--pink),var(--pink2));display:grid;place-items:center;color:white;font-size:22px;flex:none}
+    .hero{background:linear-gradient(135deg,var(--pink),var(--pink2));border-radius:28px;color:white;padding:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"🎀";position:absolute;right:16px;top:12px;font-size:44px;opacity:.35}.hero small{opacity:.9;font-weight:800}.hero .big{font-size:44px;font-weight:950;margin:2px 0}.hero .sub{opacity:.9}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}.mini{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center;box-shadow:0 10px 25px #ff5fae1a}.mini b{display:block;font-size:18px}.mini span{font-size:12px;color:var(--muted)}
+    .deck{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.flip{perspective:1000px;min-height:162px}.flip-inner{height:100%;transition:.45s;transform-style:preserve-3d}.flip.flipped .flip-inner{transform:rotateY(180deg)}.card{height:100%;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:14px;box-shadow:var(--shadow);backface-visibility:hidden;position:absolute;inset:0}.flip-inner{position:relative}.back{transform:rotateY(180deg);overflow:auto}.card h3{margin:0 0 8px;font-size:16px}.metric{font-size:26px;font-weight:950}.muted{color:var(--muted);font-size:12px}.bar{height:8px;background:#f4d4e5;border-radius:999px;margin:10px 0;overflow:hidden}.fill{height:100%;border-radius:999px;background:var(--pink)}
+    .donut{width:84px;height:84px;border-radius:50%;background:conic-gradient(var(--green) 0 18%,var(--orange) 18% 81%,var(--blue) 81% 100%);margin:8px auto;display:grid;place-items:center}.donut:after{content:"$768";background:#fff4fb;border-radius:50%;width:52px;height:52px;display:grid;place-items:center;font-weight:900;font-size:12px}
+    .wide{grid-column:1/-1;min-height:150px}.row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f5cfe2;padding:8px 0;font-size:13px}.row:last-child{border-bottom:0}.neg{color:#ef4444;font-weight:800}.pos{color:#16a34a;font-weight:800}.actions{display:flex;gap:8px;margin-top:10px}.btn{border:0;border-radius:999px;padding:10px 13px;font-weight:900;background:#fff;color:var(--pink);box-shadow:0 6px 16px #ff5fae24}.btn.primary{background:var(--pink);color:white}
+    nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(400px,calc(100% - 24px));background:#fffffff0;border:1px solid var(--line);border-radius:28px;padding:10px;display:grid;grid-template-columns:repeat(5,1fr);box-shadow:0 16px 38px #0002;z-index:20}nav button{border:0;background:transparent;color:var(--ink);font-weight:800;font-size:11px;display:grid;gap:3px;place-items:center}nav button.active{background:linear-gradient(135deg,var(--pink),var(--pink2));color:white;border-radius:22px;padding:8px 0}nav span{font-size:20px}
+    .screen{display:none}.screen.active{display:block}.roadmap{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:16px;box-shadow:var(--shadow)}.roadmap ol{padding-left:20px;margin:0}.roadmap li{margin:12px 0}.kitty{position:fixed;right:6px;bottom:94px;font-size:68px;opacity:.35;pointer-events:none}.hint{text-align:center;color:var(--muted);font-size:12px;margin:8px 0 0}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="brand">CasellaIQ 🎀</div><button class="pill" onclick="showInsight()">Refresh</button></header>
+    <section id="home" class="screen active">
+      <div class="hello"><h1>Good morning, Ashley ✨</h1><p>Your money at a glance.</p></div>
+      <div class="insight" id="insight"><div class="bubble">💡</div><div><b>3 bills are due this week.</b><span>Tap Bills to flip into details.</span></div></div>
+      <section class="hero flip" onclick="flip(this)"><div class="flip-inner"><div class="card" style="position:relative"><small>AVAILABLE TO SPEND</small><div class="big">$538.85</div><div class="sub">$88.85 suggested today</div></div><div class="card back"><h3>Safe Spending Formula</h3><div class="row"><span>Current balance</span><b>$661.85</b></div><div class="row"><span>Bills left</span><b class="neg">-$123</b></div><div class="row"><span>Groceries</span><b class="neg">-$276</b></div><div class="row"><span>Free to spend</span><b>$538.85</b></div></div></div></section>
+      <div class="hint">Tap cards to flip</div>
+      <div class="quick"><div class="mini"><b>8/10</b><span>Bills paid</span></div><div class="mini"><b>4 days</b><span>Payday</span></div><div class="mini"><b>$0</b><span>Overdue</span></div></div>
+      <section class="deck">
+        <div class="flip" onclick="flip(this)"><div class="flip-inner"><div class="card"><h3>Next Bill</h3><div class="metric">$105</div><b>Progressive</b><p class="muted">Due in 4 days</p></div><div class="card back"><h3>Progressive</h3><div class="row"><span>Status</span><b>Remaining</b></div><div class="row"><span>Auto match</span><b>On</b></div><button class="btn primary">Mark Paid</button></div></div></div>
+        <div class="flip" onclick="flip(this)"><div class="flip-inner"><div class="card"><h3>Spending</h3><div class="donut"></div><p class="muted">$768 spent this check</p></div><div class="card back"><h3>Top Categories</h3><div class="row"><span>Food</span><b>$72</b></div><div class="row"><span>Misc</span><b>$154</b></div><div class="row"><span>Shopping</span><b>$0</b></div></div></div></div>
+        <div class="flip" onclick="flip(this)"><div class="flip-inner"><div class="card"><h3>Groceries</h3><div class="metric">$276</div><div class="bar"><div class="fill" style="width:64%"></div></div><p class="muted">left this check</p></div><div class="card back"><h3>Recent</h3><div class="row"><span>Walmart</span><b>$27.63</b></div><div class="row"><span>Baker's</span><b>$18.18</b></div></div></div></div>
+        <div class="flip" onclick="flip(this)"><div class="flip-inner"><div class="card"><h3>Savings</h3><div class="metric">$250</div><p class="muted">goal this check</p></div><div class="card back"><h3>Projected</h3><div class="row"><span>Saved</span><b>$0</b></div><div class="row"><span>Left</span><b>$250</b></div></div></div></div>
+        <div class="flip wide" onclick="flip(this)"><div class="flip-inner"><div class="card"><h3>Recent Activity</h3><div class="row"><span>Amazon</span><b class="neg">-$20.03</b></div><div class="row"><span>Klarna</span><b class="neg">-$19.82</b></div><div class="row"><span>Walmart</span><b class="neg">-$27.63</b></div></div><div class="card back"><h3>Quick Actions</h3><div class="actions"><button class="btn primary">Review All</button><button class="btn">Add Bill</button></div><p class="muted">Only shows the 5 most important items.</p></div></div></div>
+      </section>
+    </section>
+    <section id="roadmap" class="screen"><div class="hello"><h1>Release Roadmap 🚀</h1><p>Kept handy.</p></div><div class="roadmap"><ol><li>Finish mobile UI polish</li><li>Finish theme system</li><li>Add email/password signup</li><li>Complete SimpleFIN onboarding</li><li>Beta test with Ashley</li><li>Invite friends/family</li><li>Public release</li></ol></div></section>
+    <div class="kitty">♡</div>
+    <nav><button class="active" onclick="nav('home',this)"><span>🏠</span>Home</button><button onclick="alert('Transactions view would open as compact cards')"><span>🧾</span>Tx</button><button onclick="alert('Budget view: bigger donut + flip details')"><span>📊</span>Budget</button><button onclick="alert('Bills deck: swipe and flip each bill')"><span>📅</span>Bills</button><button onclick="nav('roadmap',this)"><span>🚀</span>Roadmap</button></nav>
+  </main>
+  <script>
+    function flip(el){el.classList.toggle('flipped')}
+    function nav(id,btn){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+    const messages=[['💡','3 bills are due this week.','Tap Bills to flip into details.'],['🎉','You stayed under budget yesterday.','Nice. Keep this pace.'],['⚠️','Shopping is trending high.','Amazon and Klarna are your top items.'],['🏆','No overdue bills right now.','That is the goal.']];
+    function showInsight(){const m=messages[Math.floor(Math.random()*messages.length)];document.getElementById('insight').innerHTML=`<div class="bubble">${m[0]}</div><div><b>${m[1]}</b><span>${m[2]}</span></div>`}
+  </script>
+</body>
+</html>
